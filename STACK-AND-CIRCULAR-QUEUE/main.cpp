@@ -14,10 +14,10 @@ void operationLoop() {
 	do {
 		cout << "-------------------------Experiment 2-------------------------" << endl;
 		cout << "bs: build a new stack" << endl;
-		cout << "pss: push a character into a stack" << endl;
+		cout << "pss: push character(s) into a stack" << endl;
 		cout << "pps: pop a character from a stack" << endl;
 		cout << "bq: build a new queue" << endl;
-		cout << "psq: push a character into a queue" << endl;
+		cout << "psq: push character(s) into a queue" << endl;
 		cout << "ppq: pop a character from a queue" << endl;
 		cout << "pa: print all stacks and queues" << endl;
 		cout << "q : quit" << endl;
@@ -35,7 +35,7 @@ void operationLoop() {
             do {
                 cout << "Input a character(finish by inputting ~)" << endl;
                 cin >> temp;
-                s[n - 1]->push(temp);
+                if (temp != '~') s[n - 1]->push(temp);
             } while (temp != '~');
 		}
 		if (operation == "pps") {
@@ -58,7 +58,7 @@ void operationLoop() {
             do {
                 cout << "Input a character(finish by inputting ~)" << endl;
                 cin >> temp;
-                q[n - 1]->push(temp);
+                if (temp != '~') q[n - 1]->push(temp);
             } while (temp != '~');
 		}
 		if (operation == "ppq") {
