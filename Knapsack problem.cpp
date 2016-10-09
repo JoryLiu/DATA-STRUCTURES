@@ -2,8 +2,12 @@
 #include <deque>
 using namespace std;
 
+int counter = 0;
+
 void packing(int t, std::deque<int> w, std::deque<int> inBag) {
     if (t == 0) {
+        counter++;
+        cout << "Answer " << counter << ":" << endl;
         for (int i = 0; i < inBag.size(); i++) {
             if (i == 0) cout << inBag[0];
             else cout << " " << inBag[i];
@@ -22,7 +26,7 @@ void packing(int t, std::deque<int> w, std::deque<int> inBag) {
 int main() {
     int t, n, temp;
     deque<int> w, inBag;
-    cout << "Please enter the total volume and number of items" << endl;
+    cout << "Please enter the total volume and the number of items" << endl;
     cin >> t >> n;
     cout << "Please enter the weight of each item" << endl;
     for (int i = 0; i < n; i++) {
@@ -30,5 +34,6 @@ int main() {
         w.push_back(temp);
     }
     packing(t, w, inBag);
+    if (!counter) cout << "Not found" << endl;
     return 0;
 }
