@@ -1,6 +1,7 @@
 #ifndef RUNWAY_HPP_
 #define RUNWAY_HPP_
 #include "../EXTQUEUE/EXTQUEUE.hpp"
+#include "PLANE.hpp"
 using namespace std;
 
 enum Runway_activity {idle, land, take_off};
@@ -12,12 +13,12 @@ public:
     Error_code can_depart(const Plane &current);
     Runway_activity activity(int time, Plane &moving);
     void shut_down(int time) const;
-    int Runway::arrival_size();
-    int Runway::departure_size();
+    int arrival_size();
+    int departure_size();
 
 private:
-    Extended_queue<Plane> landing;
-    Extended_queue<Plane> takeoff;
+    Extended_queue landing;
+    Extended_queue takeoff;
     int queue_limit;
     int num_land_requests;        //  number of planes asking to land
     int num_takeoff_requests;     //  number of planes asking to take off

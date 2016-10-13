@@ -1,5 +1,4 @@
 #include <iostream>
-#include <system_error>
 #include "PLANE.hpp"
 #include "RUNWAY.hpp"
 #include "../../B/RANDOM.hpp"
@@ -71,7 +70,7 @@ void move_plane(Runway & current_runway, int current_time) {
 	}
 }
 
-void main() {     //  Airport simulation program
+int main() {     //  Airport simulation program
 // Pre: 
 //  The user must supply the number of time intervals the simulation is to
 //  run, the expected number of planes arriving, the expected number
@@ -126,4 +125,5 @@ void main() {     //  Airport simulation program
        }
    }
    small_airport.shut_down(end_time);
+   return 0;
 }

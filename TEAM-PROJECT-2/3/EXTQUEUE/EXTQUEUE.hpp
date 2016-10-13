@@ -2,8 +2,7 @@
 #define EXTENDED_QUEUE_HPP_
 #include "../QUEUE/QUEUE.hpp"
 
-template <class Queue_entry>
-class Extended_queue: public Queue<Queue_entry> {
+class Extended_queue: public Queue {
 public:
    bool full() const;
    int size() const;

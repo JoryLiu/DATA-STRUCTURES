@@ -1,6 +1,6 @@
 #include <limits>
 #include <cmath>
-#include <time.h>
+#include <ctime>
 #include "RANDOM.hpp"
 
 const int max_int = INT_MAX;

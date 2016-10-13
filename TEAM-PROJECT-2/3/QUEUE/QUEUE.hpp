@@ -1,10 +1,11 @@
 #ifndef QUEUE_HPP_
 #define QUEUE_HPP_
 #include "../../C/UTILITY.hpp"
+#include "../AIRPORT/PLANE.hpp"
 
 const int maxqueue = 10; //  small value for testing
+typedef Plane Queue_entry;
 
-template <class Queue_entry>
 class Queue {
 public:
    Queue();
