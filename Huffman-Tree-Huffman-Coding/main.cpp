@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <string>
-#include "tree_solution.h"
+#include "tree_solution.hpp"
 using namespace std;
 using namespace MP;
 using namespace HFM;
