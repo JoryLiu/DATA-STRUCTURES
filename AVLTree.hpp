@@ -6,13 +6,13 @@
 
 template<typename T>
 class AVLTree {
-  public:
-    typedef struct Node {
-        int val;
+public:
+    struct Node {
+        T val;
         int height;
         Node* left;
         Node* right;
-        Node(int v, int h = 1, Node* l = NULL, Node* r = NULL) :
+        Node(T v, int h = 1, Node* l = NULL, Node* r = NULL) :
             val(v), height(h), left(l), right(r) {
         }
     };
@@ -20,19 +20,23 @@ class AVLTree {
     AVLTree(const std::vector<int>&);
     ~AVLTree();
 
-    bool insertNode(int);
-    bool searchNode(int);
-    bool deleteNode(int);
+    Node* insertNode(Node*, T);
+    bool searchNode(T);
+    bool deleteNode(T);
     void clear();
 
     Node* getRoot() const;
     int getHeight(Node* root);
 
-    void preOrder(void(*visit)(T&), Node*);
-    void inOrder(void(*visit)(T&), Node*);
-    void postOrder(void(*visit)(T&), Node*);
+    void preOrder(Node*);
+    void inOrder(Node*);
+    void postOrder(Node*);
 
-  private:
+private:
+    Node* left_left_ratation(Node*);
+    Node* left_right_ratation(Node*);
+    Node* right_left_ratation(Node*);
+    Node* right_right_ratation(Node*);
     Node* root;
 };
 
@@ -45,9 +49,8 @@ template<typename T>
 AVLTree<T>::AVLTree(const std::vector<int>& elements) {
     root = NULL;
     unsigned long size = elements.size();
-    for (int i = 0; i < size; i++) {
-        insertNode(elements[i]);
-    }
+    for (int i = 0; i < size; i++)
+        root = insertNode(root, elements[i]);
 }
 
 template<typename T>
@@ -60,85 +63,59 @@ inline int max(int a, int b) {
 }
 
 template<typename T>
-bool AVLTree<T>::insertNode(int) {
-    Node *temp = root;
-    if (temp == NULL) {
-        temp = new Node(element);
-        root = temp;
-        return true;
+Node<T>* AVLTree<T>::insertNode(Node<T>* root, T element) {
+    if (root == NULL) {
+        root = new Node(element);
     }
-    else {
-        while (temp != NULL) {
-            if (temp->val == element) {
-                return false;
-            }
-            else if (temp->val > element) {
-                if (temp->left == NULL) {
-                    temp->left = new Node(element);
-                    temp->height = max(temp->left->height, temp->right->height) + 1;
-                    if (temp->left->height - temp->right->height == 2) {
-                        if (element < temp->left->val)
-                            leftLeftRotation(temp);
-                        else
-                            leftRightRotation(temp);
-                    }
-                    return true;
-                }
-                else {
-                    temp = temp->left;
-                }
-            }
-            else {
-                if (temp->right == NULL) {
-                    temp->right = new Node(element);
-                    temp->height = max(temp->left->height, temp->right->height) + 1;
-                    if (temp->right->height - temp->left->height == 2) {
-                        if (element > temp->right->val)
-                            rightRightRotation(temp);
-                        else
-                            rightLeftRotation(temp);
-                    }
-                    return true;
-                }
-                else {
-                    temp = temp->right;
-                }
-            }
+    else if (element < root->val) {
+        root = insertNode(root->left, element);
+        root->height = max(getHeight(root->left), getHeight(root->right)) + 1;
+        if (getHeight(temp->left) - getHeight(temp->right) == 2) {
+            if (element < temp->left->val)
+                root = left_left_rotation(root);
+            else
+                root = left_right_rotation(root);
         }
     }
-    return false;
+    else if (element > root->val) {
+        root = insertNode(root->right, element);
+        root->height = max(getHeight(root->left), getHeight(root->right)) + 1;
+        if (getHeight(temp->right) - getHeight(temp->left) == 2) {
+            if (element > temp->right->val)
+                root = right_right_rotation(root);
+            else
+                root = right_left_rotation(root);
+        }
+    }
+
 }
 
 template<typename T>
-bool AVLTree<T>::searchNode(int) {
-    Node *temp = root;
+bool AVLTree<T>::searchNode(T element) {
+    Node* temp = root;
     while (temp != NULL) {
-        if (temp->val == element) {
+        if (temp->val == element)
             return true;
-        }
-        else if (temp->val > element) {
+        else if (temp->val > element)
             temp = temp->left;
-        }
-        else {
+        else
             temp = temp->right;
-        }
     }
     return false;
 }
 
 template<typename T>
-bool AVLTree<T>::deleteNode(int) {
+bool AVLTree<T>::deleteNode(T) {
 
 }
 
 template<typename T>
 void AVLTree<T>::clear() {
     std::queue<Node*> queue;
-    if (root != NULL) {
+    if (root != NULL)
         queue.push(root);
-    }
     while (!queue.empty()) {
-        Node * temp = queue.front();
+        Node* temp = queue.front();
         queue.pop();
         if (temp->left != NULL)
             queue.push(temp->left);
@@ -149,7 +126,7 @@ void AVLTree<T>::clear() {
 }
 
 template<typename T>
-Node* AVLTree<T>::getRoot() const {
+Node<T>* AVLTree<T>::getRoot() const {
     return root;
 }
 
@@ -159,30 +136,62 @@ int AVLTree<T>::getHeight(Node* root) {
 }
 
 template<typename T>
-void AVLTree<T>::preOrder(void(*visit)(T&), Node*) {
+void AVLTree<T>::preOrder(Node* root) {
     if (root != NULL) {
-        visit(root->val);
-        preOrder(visit, root->left);
-        preOrder(visit, root->right);
+        cout << root->val << " ";
+        preOrder(root->left);
+        preOrder(root->right);
     }
 }
 
 template<typename T>
-void AVLTree<T>::inOrder(void(*visit)(T&), Node*) {
+void AVLTree<T>::inOrder(Node* root) {
     if (root != NULL) {
-        inOrder(visit, root->left);
-        visit(root->val);
-        inOrder(visit, root->right);
+        inOrder(root->left);
+        cout << root->val << " ";
+        inOrder(root->right);
     }
 }
 
 template<typename T>
-void AVLTree<T>::postOrder(void(*visit)(T&), Node*) {
+void AVLTree<T>::postOrder(Node* root) {
     if (root != NULL) {
-        postOrder(visit, root->left);
-        postOrder(visit, root->right);
-        visit(root->val);
+        postOrder(root->left);
+        postOrder(root->right);
+        cout << root->val << " ";
     }
+}
+
+template<typename T>
+AVLTree<T>::Node<T>* AVLTree<T>::left_left_ratation(Node* node) {
+    Node* temp = node->left;
+    node->left = temp->right;
+    temp->right = node;
+    node->height = max(getHeight(node->left), getHeight(node->right)) + 1;
+    temp->height = max(getHeight(temp->left), getHeight(temp->right)) + 1;
+    return temp;
+}
+
+template<typename T>
+AVLTree<T>::Node* AVLTree<T>::left_right_ratation(Node* node) {
+    node->left = right_right_rotation(node->left);
+    return left_left_ratation(node);
+}
+
+template<typename T>
+AVLTree<T>::Node* AVLTree<T>::right_left_ratation(Node* node) {
+    node->right = left_left_rotation(node->right);
+    return right_right_ratation(node);
+}
+
+template<typename T>
+AVLTree<T>::Node* AVLTree<T>::right_right_ratation(Node* node) {
+    Node* temp = node->right;
+    node->right = temp->left;
+    temp->left = node;
+    node->height = max(getHeight(node->left), getHeight(node->right)) + 1;
+    temp->height = max(getHeight(temp->left), getHeight(temp->right)) + 1;
+    return temp;
 }
 
 #endif AVL_TREE_HPP
