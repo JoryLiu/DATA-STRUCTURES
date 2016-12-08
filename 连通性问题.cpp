@@ -1,39 +1,44 @@
 #include <cstdio>
-#include <set>
+#include <queue>
+#include <vector>
 #include <deque>
 using namespace std;
 
 int main() {
-    int a, b;
-    deque<set<int>*>::iterator ia, ib;
-    deque<set<int>*> d;
+    int a, b, temp;
+    deque<vector<int>*> d;
+    vector<int> n(200000, -1);
     while (scanf("%d%d", &a, &b) != EOF) {
-        for (ia = d.begin(); ia != d.end(); ia++)
-            if ((*ia)->find(a) != (*ia)->end())
-                break;
-        for (ib = d.begin(); ib != d.end(); ib++)
-            if ((*ib)->find(b) != (*ib)->end())
-                break;
-        if (ia == ib && ia == d.end()) {
-            set<int>* s = new set<int>;
-            s->insert(a);
-            s->insert(b);
+        if (n[a] == n[b] && n[a] == -1) {
+            vector<int>* s = new vector<int>;
+            s->push_back(a);
+            s->push_back(b);
             d.push_back(s);
-        } else if (ia == d.end() && ib != d.end())
-            (*ib)->insert(a);
-        else if (ib == d.end() && ia != d.end())
-            (*ia)->insert(b);
-        else if (ia != d.end() && ib != d.end() && ia != ib) {
-            if (ia < ib) {
-                (*ia)->insert((*ib)->begin(), (*ib)->end());
-                delete(*ib);
-                d.erase(ib);
+            n[a] = n[b] = d.size() - 1;
+        }
+        else if (n[a] == -1 && n[b] != -1) {
+            d[n[b]]->push_back(a);
+            n[a] = n[b];
+        }
+        else if (n[b] == -1 && n[a] != -1) {
+            d[n[a]]->push_back(b);
+            n[b] = n[a];
+        }
+        else if (n[a] != -1 && n[b] != -1 && n[a] != n[b]) {
+            if (n[a] < n[b]) {
+                temp = n[b];
+                for (int i = 0; i < d[temp]->size(); i++) {
+                    d[n[a]]->push_back(d[temp]->at(i));
+                    n[d[temp]->at(i)] = n[a];
+                }
             } else {
-                (*ib)->insert((*ia)->begin(), (*ia)->end());
-                delete(*ia);
-                d.erase(ia);
+                temp = n[a];
+                for (int i = 0; i < d[temp]->size(); i++) {
+                    d[n[b]]->push_back(d[temp]->at(i));
+                    n[d[temp]->at(i)] = n[b];
+                }
             }
-        } else if (ia != d.end() && ib != d.end() && ia == ib)
+        } else if (n[a] != -1 && n[b] != -1 && n[a] == n[b])
             continue;
         printf("%d %d\n", a, b);
     }
